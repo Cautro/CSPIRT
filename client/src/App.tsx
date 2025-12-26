@@ -1,22 +1,41 @@
-import { useEffect, useState } from 'react';
-import './App.css';
+import { Routes, Route } from 'react-router-dom'
+import Header from './components/Header'
+import Home from './pages/Home'
+import RatingPage from './pages/RatingPage'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import UserDashboard from './pages/UserDashboard'
+import TeacherDashboard from './pages/TeacherDashboard'
+import HelperDashboard from './pages/HelperDashboard'
+import AdminDashboard from './pages/AdminDashboard'
+import { useAuth } from './hooks/useAuth'
 
 function App() {
-    const [status, setStatus] = useState('loading');
-
-    useEffect(() => {
-        fetch('http://151.242.88.125:5000/api/health')
-            .then(r => r.json())
-            .then(() => setStatus('server connected'))
-            .catch(() => setStatus('server offline'));
-    }, []);
+    const { user } = useAuth()
 
     return (
-        <div className="container">
-            <h1>CSPIRT</h1>
-            <p>{status}</p>
-        </div>
-    );
+        <>
+            <Header />
+            <main className="container mx-auto p-4">
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/rating" element={<RatingPage />} />
+                    {user && (
+                        <>
+                            <Route path="/dashboard" element={
+                                user.role === 'admin' || user.hidden_role === 'owner' ? <AdminDashboard /> :
+                                    user.role === 'teacher' ? <TeacherDashboard /> :
+                                        user.role === 'helper' ? <HelperDashboard /> :
+                                            <UserDashboard />
+                            } />
+                        </>
+                    )}
+                </Routes>
+            </main>
+        </>
+    )
 }
 
-export default App;
+export default App
