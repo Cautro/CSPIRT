@@ -1,37 +1,54 @@
-import { Router } from 'express';
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
-import { User } from '../models/User';
+import { Router } from 'express'
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
+import { User } from '../models/User'
 
-const router = Router();
+const router = Router()
 
 router.post('/login', async (req, res) => {
-    const { email, password } = req.body;
+    try {
+        const { username, password } = req.body
 
-    const user = await User.findOne({ email });
-    if (!user) {
-        return res.status(400).json({ message: 'Неверные данные' });
+        if (!username || !password) {
+            return res.status(400).json({ message: 'Нет логина или пароля' })
+        }
+
+        const user = await User.findOne({ username })
+        if (!user) {
+            return res.status(401).json({ message: 'Неверный логин или пароль' })
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password)
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Неверный логин или пароль' })
+        }
+
+        if (!process.env.JWT_SECRET) {
+            throw new Error('JWT_SECRET not defined')
+        }
+
+        const token = jwt.sign(
+            {
+                id: user._id,
+                role: user.role,
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: '7d' }
+        )
+
+        res.json({
+            token,
+            user: {
+                id: user._id,
+                username: user.username,
+                role: user.role,
+                rating: user.rating,
+            },
+        })
+    } catch (err) {
+        console.error('LOGIN ERROR:', err)
+        res.status(500).json({ message: 'Ошибка сервера' })
     }
+})
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-        return res.status(400).json({ message: 'Неверные данные' });
-    }
-
-    if (!process.env.JWT_SECRET) {
-        throw new Error('JWT_SECRET is not defined');
-    }
-
-    const payload = {
-        id: user._id.toString(),
-        role: user.role
-    };
-
-    const token = jwt.sign(payload, process.env.JWT_SECRET, {
-        expiresIn: '1h'
-    });
-
-    res.json({ token });
-});
-
-export default router;
+export default router
