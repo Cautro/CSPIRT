@@ -1,54 +1,38 @@
-import { Router } from 'express'
-import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
-import { User } from '../models/User'
+// server/src/routes/auth.ts
+import { Router } from 'express';
+import * as fs from 'fs';
+import * as path from 'path';
 
-const router = Router()
+const router = Router();
+const usersPath = path.join(__dirname, '../data/users.json');
 
-router.post('/login', async (req, res) => {
-    try {
-        const { username, password } = req.body
+router.post('/login', (req, res) => {
+    console.log("Login attempt:", req.body); // <-- Добавь для дебага
 
-        if (!username || !password) {
-            return res.status(400).json({ message: 'Нет логина или пароля' })
-        }
+    const { login, password } = req.body;
 
-        const user = await User.findOne({ username })
-        if (!user) {
-            return res.status(401).json({ message: 'Неверный логин или пароль' })
-        }
+    const usersRaw = fs.readFileSync(usersPath, 'utf8');
+    const users = JSON.parse(usersRaw);
 
-        const isMatch = await bcrypt.compare(password, user.password)
-        if (!isMatch) {
-            return res.status(401).json({ message: 'Неверный логин или пароль' })
-        }
+    const user = users.find((u: any) => u.login === login && u.password === password);
 
-        if (!process.env.JWT_SECRET) {
-            throw new Error('JWT_SECRET not defined')
-        }
-
-        const token = jwt.sign(
-            {
-                id: user._id,
-                role: user.role,
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: '7d' }
-        )
-
+    if (user) {
         res.json({
-            token,
+            success: true,
             user: {
-                id: user._id,
-                username: user.username,
+                id: user.id,
+                login: user.login,
                 role: user.role,
-                rating: user.rating,
+                name: user.name,
+                class: user.class,
             },
-        })
-    } catch (err) {
-        console.error('LOGIN ERROR:', err)
-        res.status(500).json({ message: 'Ошибка сервера' })
+        });
+    } else {
+        res.status(401).json({
+            success: false,
+            message: 'Неверный логин или пароль',
+        });
     }
-})
+});
 
-export default router
+export default router; // <-- Убедись, что это есть

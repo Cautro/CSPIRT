@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "login": "user1",
+    "password": "123456",
+    "role": "user",
+    "name": "Иванов Иван",
+    "class": "9А"
+  },
+  {
+    "id": 2,
+    "login": "helper1",
+    "password": "123456",
+    "role": "helper",
+    "name": "Сидоров Сидор",
+    "class": "9А"
+  },
+  {
+    "id": 3,
+    "login": "admin",
+    "password": "admin123",
+    "role": "admin",
+    "name": "Петрова Мария",
+    "class": "—"
+  },
+  {
+    "id": 4,
+    "login": "owner",
+    "password": "owner123",
+    "role": "owner",
+    "name": "Скрытый Владелец",
+    "class": "—"
+  }
+]
