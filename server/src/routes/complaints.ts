@@ -1,15 +1,32 @@
-import { Router } from 'express';
-import { authMiddleware } from '../middleware/auth';
+import { Router } from 'express'
+import { readJSON, writeJSON } from '../utils/jsonStore'
+import { v4 as uuid } from 'uuid'
 
-const router = Router();
+const router = Router()
 
-router.post('/', authMiddleware, async (req, res) => {
-    if (!req.user) {
-        return res.status(401).json({ message: 'Не авторизован' });
-    }
+// Получить жалобы
+router.get('/', (req, res) => {
+    const complaints = readJSON<any[]>('complaints.json')
+    res.json(complaints)
+})
 
-    // req.user доступен
-    res.json({ message: 'Жалоба создана', userId: req.user._id });
-});
+// Создать жалобу (анонимно)
+router.post('/', (req, res) => {
+    const { fromUserId, toUserId, text } = req.body
 
-export default router;
+    const complaints = readJSON<any[]>('complaints.json')
+
+    complaints.push({
+        id: uuid(),
+        fromUserId,
+        toUserId,
+        text,
+        date: new Date().toISOString(),
+        handled: false
+    })
+
+    writeJSON('complaints.json', complaints)
+    res.json({ success: true })
+})
+
+export default router

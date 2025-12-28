@@ -1,48 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { getUser, sendComplaint } from '../api/api.ts';
-
-const UserPanel = () => {
-    const [user, setUser] = useState<any>(null);
-    const [complaint, setComplaint] = useState('');
-
-    useEffect(() => {
-        const userData = JSON.parse(localStorage.getItem('user')!);
-        setUser(userData);
-    }, []);
-
-    const handleSendComplaint = async () => {
-        if (!complaint.trim()) return;
-        try {
-            await sendComplaint(user.id, complaint);
-            alert('Жалоба отправлена!');
-            setComplaint('');
-        } catch (err) {
-            alert('Ошибка при отправке жалобы');
-        }
-    };
-
+const UserPanel = ({ user }: any) => {
     return (
-        <div className="dashboard-container">
-            <h2>Профиль ученика</h2>
-            <div className="user-card">
-                <div>
-                    <h3>{user?.name}</h3>
-                    <p>Класс: {user?.class}</p>
-                    <p>Рейтинг: {user?.rating || 0}</p>
-                </div>
+        <div className="container">
+            <div className="card">
+                <h2>{user.name}</h2>
+                <p>Класс: {user.class}</p>
+                <p>Рейтинг: {user.rating}</p>
             </div>
 
-            <div className="complaint-form">
-                <h3>Отправить жалобу</h3>
-                <textarea
-                    placeholder="Опишите жалобу"
-                    value={complaint}
-                    onChange={(e) => setComplaint(e.target.value)}
-                />
-                <button onClick={handleSendComplaint}>Отправить</button>
+            <div className="card">
+                <h3>Анонимная жалоба</h3>
+                <textarea placeholder="Текст жалобы" />
+                <button>Отправить</button>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default UserPanel;
+export default UserPanel

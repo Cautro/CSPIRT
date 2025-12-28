@@ -5,8 +5,9 @@ const router = Router()
 
 router.post('/login', (req, res) => {
     const { login, password } = req.body
-
-    const user = users.find(
+    console.log('BODY:', req.body)
+    console.log('USERS:', users)
+    const user = (users as any[]).find(
         u => u.login === login && u.password === password
     )
 
@@ -14,15 +15,8 @@ router.post('/login', (req, res) => {
         return res.status(401).json({ message: 'Неверный логин или пароль' })
     }
 
-    res.json({
-        id: user.id,
-        login: user.login,
-        role: user.role,
-        isOwner: user.isOwner,
-        fullName: user.fullName,
-        class: user.class,
-        rating: user.rating
-    })
+    const { password: _, ...safeUser } = user
+    res.json(safeUser)
 })
 
 export default router

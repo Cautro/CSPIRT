@@ -4,9 +4,8 @@
     "login": "user1",
     "password": "123456",
     "role": "user",
-    "isOwner": false,
-    "fullName": "Иванов Иван",
-    "class": "9A",
+    "name": "Иванов Иван",
+    "class": "9А",
     "rating": 50
   },
   {
@@ -14,20 +13,17 @@
     "login": "helper1",
     "password": "123456",
     "role": "helper",
-    "isOwner": false,
-    "fullName": "Петров Пётр",
-    "class": "9A",
-    "rating": 55
+    "name": "Петров Пётр",
+    "class": "9А",
+    "rating": 60
   },
   {
     "id": "3",
     "login": "admin",
     "password": "admin123",
     "role": "admin",
-    "isOwner": false,
-    "fullName": "Сидоров Сергей",
-    "class": "Учитель",
-    "rating": 0
+    "name": "Сидоров Сергей",
+    "class": "Учитель"
   },
   {
     "id": "4",
@@ -35,8 +31,6 @@
     "password": "owner123",
     "role": "user",
     "isOwner": true,
-    "fullName": "Администратор Системы",
-    "class": "—",
-    "rating": 999
+    "name": "Скрытый овнер"
   }
 ]

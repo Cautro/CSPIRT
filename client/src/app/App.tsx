@@ -1,11 +1,11 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import Login from '../pages/Login'
-import UserPanel from '../pages/UserPanel'
-import HelperPanel from '../pages/HelperPanel'
+import Dashboard from '../pages/Dashboard'
 import AdminPanel from '../pages/AdminPanel'
-import { useAuth } from '../auth/useAuth'
+import { useAuth } from '../auth/AuthContext'
+import Navbar from '../components/Navbar'
 
-export default function App() {
+const App = () => {
     const { user } = useAuth()
 
     if (!user) {
@@ -17,13 +17,16 @@ export default function App() {
         )
     }
 
-    if (user.role === 'admin' || user.isOwner) {
-        return <AdminPanel />
-    }
-
-    if (user.role === 'helper') {
-        return <HelperPanel />
-    }
-
-    return <UserPanel />
+    return (
+        <>
+            <Navbar />
+            <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/admin" element={<AdminPanel />} />
+                <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+        </>
+    )
 }
+
+export default App

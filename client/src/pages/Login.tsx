@@ -4,29 +4,38 @@ import { useNavigate } from 'react-router-dom'
 import '../styles/login.css'
 
 export default function Login() {
-    const { login } = useAuth()
     const navigate = useNavigate()
+    const { login: authLogin } = useAuth()
 
-    const [username, setUsername] = useState('')
+    const [login, setLogin] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
+
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setError('')
 
-        if (!username || !password) {
-            setError('Введите логин и пароль')
+        const res = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                login,
+                password
+            })
+        })
+
+        if (!res.ok) {
+            setError('Неверный логин или пароль')
             return
         }
 
-        try {
-            await login(username, password)
-            navigate('/dashboard')
-        } catch {
-            setError('Неверный логин или пароль')
-        }
+        const user = await res.json()
+        console.log('LOGGED USER:', user)
     }
+
 
     return (
         <div className="auth-page">
@@ -36,8 +45,8 @@ export default function Login() {
                 <input
                     type="text"
                     placeholder="Логин"
-                    value={username}
-                    onChange={e => setUsername(e.target.value)}
+                    value={login}
+                    onChange={e => setLogin(e.target.value)}
                 />
 
                 <input
@@ -46,6 +55,7 @@ export default function Login() {
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                 />
+
 
                 {error && <div className="error">{error}</div>}
 
