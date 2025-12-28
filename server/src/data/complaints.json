@@ -1,0 +1,10 @@
+[
+  {
+    "id": "c1",
+    "fromUserId": "1",
+    "toUserId": "2",
+    "text": "Шумел на уроке",
+    "date": "2025-01-05T14:20:00Z",
+    "handled": false
+  }
+]

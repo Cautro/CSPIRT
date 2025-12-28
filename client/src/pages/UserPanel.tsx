@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { getUser, sendComplaint } from '../services/api';
+import { getUser, sendComplaint } from '../api/api.ts';
 
-const UserDashboard = () => {
+const UserPanel = () => {
     const [user, setUser] = useState<any>(null);
     const [complaint, setComplaint] = useState('');
 
@@ -45,4 +45,4 @@ const UserDashboard = () => {
     );
 };
 
-export default UserDashboard;
+export default UserPanel;

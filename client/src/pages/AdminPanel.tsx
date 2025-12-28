@@ -1,8 +1,8 @@
-// client/src/pages/AdminDashboard.tsx
+// client/src/pages/AdminPanel.tsx
 
 import React, { useState } from 'react';
 
-const AdminDashboard = () => {
+const AdminPanel = () => {
     const [users, setUsers] = useState([
         {
             id: 1,
@@ -69,4 +69,4 @@ const AdminDashboard = () => {
     );
 };
 
-export default AdminDashboard;
+export default AdminPanel;

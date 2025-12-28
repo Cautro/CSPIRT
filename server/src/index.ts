@@ -6,10 +6,9 @@ const app = express();
 
 app.use(cors({
     origin: 'http://localhost:5173',
-    credentials: true,
-}));
-
-app.use(express.json());
+    credentials: true
+}))
+app.use(express.json())
 
 // Подключаем маршрут auth по префиксу /api/auth
 app.use('/api/auth', authRoutes);

@@ -1,45 +1,56 @@
-import React, { useState } from 'react';
-import { login } from '../services/api';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react'
+import { useAuth } from '../auth/AuthContext.tsx'
+import { useNavigate } from 'react-router-dom'
+import '../styles/login.css'
 
-export const Login = () => {
-    const navigate = useNavigate();
+export default function Login() {
+    const { login } = useAuth()
+    const navigate = useNavigate()
+
+    const [username, setUsername] = useState('')
+    const [password, setPassword] = useState('')
+    const [error, setError] = useState('')
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
+        e.preventDefault()
+        setError('')
+
+        if (!username || !password) {
+            setError('Введите логин и пароль')
+            return
+        }
 
         try {
-            const data = await login(username, password);
-            if (data.success) {
-                localStorage.setItem('user', JSON.stringify(data.user));
-                navigate('/dashboard');
-            } else {
-                setError(data.message || 'Ошибка авторизации');
-            }
-        } catch (err: any) {
-            setError(err.response?.data?.message || 'Ошибка подключения');
+            await login(username, password)
+            navigate('/dashboard')
+        } catch {
+            setError('Неверный логин или пароль')
         }
-    };
+    }
 
     return (
-        <div>
-            <h2>Вход</h2>
-            <form onSubmit={handleSubmit}>
+        <div className="auth-page">
+            <form className="auth-card" onSubmit={handleSubmit}>
+                <h1>CSPIRT</h1>
+
                 <input
                     type="text"
                     placeholder="Логин"
                     value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    onChange={e => setUsername(e.target.value)}
                 />
+
                 <input
                     type="password"
                     placeholder="Пароль"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={e => setPassword(e.target.value)}
                 />
+
+                {error && <div className="error">{error}</div>}
+
                 <button type="submit">Войти</button>
-                {error && <p style={{ color: 'red' }}>{error}</p>}
             </form>
         </div>
-    );
-};
+    )
+}
