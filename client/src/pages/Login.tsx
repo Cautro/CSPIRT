@@ -1,45 +1,45 @@
-import { useState } from 'react'
-import { useAuth } from '../context/AuthContext'
-import api from '../services/api';
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from 'react';
+import { login } from '../services/api';
+import { useNavigate } from 'react-router-dom';
 
-export default function Login() {
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
-    const [error, setError] = useState('')
-    const auth = useAuth()
-    const nav = useNavigate()
+export const Login = () => {
+    const navigate = useNavigate();
 
-    const submit = async () => {
-        setError('')
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
         try {
-            const res = await api.post('/auth/login', { username, password })
-            auth.login(res.data.token, res.data.role)
-            nav('/')
-        } catch (e: any) {
-            setError(e.response?.data?.message || 'Ошибка входа')
+            const data = await login(username, password);
+            if (data.success) {
+                localStorage.setItem('user', JSON.stringify(data.user));
+                navigate('/dashboard');
+            } else {
+                setError(data.message || 'Ошибка авторизации');
+            }
+        } catch (err: any) {
+            setError(err.response?.data?.message || 'Ошибка подключения');
         }
-    }
+    };
 
     return (
-        <div className="page-center">
-            <div className="card">
-                <h1>Вход в систему</h1>
-
-                {error && <div className="error">{error}</div>}
-
-                <label>Логин</label>
-                <input value={username} onChange={e => setUsername(e.target.value)} />
-
-                <label>Пароль</label>
+        <div>
+            <h2>Вход</h2>
+            <form onSubmit={handleSubmit}>
+                <input
+                    type="text"
+                    placeholder="Логин"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                />
                 <input
                     type="password"
+                    placeholder="Пароль"
                     value={password}
-                    onChange={e => setPassword(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
                 />
-
-                <button onClick={submit}>Войти</button>
-            </div>
+                <button type="submit">Войти</button>
+                {error && <p style={{ color: 'red' }}>{error}</p>}
+            </form>
         </div>
-    )
-}
+    );
+};

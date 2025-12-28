@@ -1,15 +1,28 @@
-import { useAuth } from '../context/AuthContext'
+import React from 'react';
+import '../styles/index.css'
 
-export default function Dashboard() {
-    const { role } = useAuth()
+const Dashboard = () => {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+
+    if (!user.login) {
+        // Если пользователь не залогинен — перенаправляем на /
+        window.location.href = '/';
+        return null;
+    }
 
     return (
-        <div className="container">
-            <div className="box">
-                <h1>Личный кабинет</h1>
-                <p>Ваша роль: <b>{role}</b></p>
-                <p>Социальный рейтинг: <b>100</b></p>
-            </div>
+        <div style={{ padding: '20px' }}>
+            <h1>Панель управления</h1>
+            <p>Привет, {user.name} ({user.role})!</p>
+            <p>Твой класс: {user.class}</p>
+            <button onClick={() => {
+                localStorage.removeItem('user');
+                window.location.href = '/';
+            }}>
+                Выйти
+            </button>
         </div>
-    )
-}
+    );
+};
+
+export default Dashboard;

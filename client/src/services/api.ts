@@ -6,18 +6,31 @@ const api = axios.create({
     baseURL: API_BASE_URL,
 });
 
-export const login = async (login: string, password: string) => {
+export const login = async (username: string, password: string) => {
     try {
-        const response = await api.post('/auth/login', {
-            login,
-            password,
-        });
-        return response.data;
-    } catch (error: any) {
-        // Показываем ошибку, если не 200 OK
-        console.error("Login error:", error.response?.data || error.message);
+        const response = await api.post('/auth/login', { username, password });
+        return response.data; // <-- важно: возвращаем .data
+    } catch (error) {
         throw error;
     }
+};
+
+export const getUsers = async () => {
+    const response = await api.get('/users');
+    return response.data;
+};
+
+export const updateRating = async (userId: number, value: number) => {
+    await api.post('/admin/update-rating', { userId, value });
+};
+
+export const sendComplaint = async (targetId: number, message: string) => {
+    await api.post('/complaints/send', { targetId, message });
+};
+
+export const getLogs = async () => {
+    const response = await api.get('/logs');
+    return response.data;
 };
 
 export default api;

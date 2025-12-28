@@ -1,31 +1,26 @@
-import express from 'express'
-import cors from 'cors'
-import authRoutes from './routes/auth'
-import mongoose from 'mongoose'
-import dotenv from 'dotenv'
+import express from 'express';
+import cors from 'cors';
+import authRoutes from './routes/auth'; // импортируем маршрут auth
 
-dotenv.config()
-
-export const app = express()
+const app = express();
 
 app.use(cors({
     origin: 'http://localhost:5173',
-    credentials: true
-}))
-app.use(express.json())
+    credentials: true,
+}));
 
-app.use('/services/auth', authRoutes)
+app.use(express.json());
 
-const PORT = process.env.PORT || 5000
+// Подключаем маршрут auth по префиксу /api/auth
+app.use('/api/auth', authRoutes);
 
-mongoose.connect(process.env.MONGO_URI!)
-    .then(() => {
-        console.log('✅ MongoDB connected')
+// Обработчик 404 для остальных маршрутов
+app.use('*', (req, res) => {
+    res.status(404).json({ message: 'Route not found' });
+});
 
-        app.listen(PORT, () => {
-            console.log(`🚀 Server running on http://localhost:${PORT}`)
-        })
-    })
-    .catch(err => {
-        console.error('❌ Mongo error:', err)
-    })
+const PORT = 5000;
+
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});
