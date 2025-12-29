@@ -35,21 +35,21 @@ const HelperPanel = () => {
         }
     };
 
-    if (loading) return <div className="text-center py-10 text-gray-100">Загрузка...</div>;
+    if (loading) return <div className="text-center py-10">Загрузка...</div>;
 
     return (
-        <div className="bg-gray-800 p-6 rounded-xl shadow-md">
-            <h2 className="text-2xl font-semibold mb-4">Заметки к ученикам</h2>
-            <ul className="space-y-3 mb-6">
+        <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
+            <h2 className="text-2xl font-semibold mb-4">Помощник: Заметки к ученикам</h2>
+            <ul className="space-y-4 mb-6">
                 {usersList.map((userItem) => (
                     <li
                         key={userItem.id}
-                        className="bg-gray-700 p-4 rounded-md flex justify-between items-center"
+                        className="bg-gray-700 p-4 rounded"
                     >
                         {userItem.fio} ({userItem.class})
                         <button
                             onClick={() => setSelectedUserId(userItem.id)}
-                            className="bg-blue-600 px-3 py-1 rounded-md hover:bg-blue-700 transition duration-200"
+                            className="ml-4 bg-blue-600 px-3 py-1 rounded hover:bg-blue-700"
                         >
                             Добавить заметку
                         </button>
@@ -62,9 +62,9 @@ const HelperPanel = () => {
               value={noteContent}
               onChange={(e) => setNoteContent(e.target.value)}
               placeholder="Введите заметку..."
-              className="bg-gray-700 p-2 rounded-md mb-2 h-24 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+              className="bg-gray-700 text-white p-2 rounded mb-2"
           />
-                    <button onClick={addNote} className="bg-green-600 px-4 py-2 rounded-md hover:bg-green-700 transition duration-200">
+                    <button onClick={addNote} className="bg-green-600 px-4 py-2 rounded hover:bg-green-700">
                         Сохранить заметку
                     </button>
                 </div>

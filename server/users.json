@@ -2,41 +2,38 @@
   {
     "id": 1,
     "username": "admin",
-    "password_hash": "$2a$10$Zau5dRgb76v5LNfaRim7SOyRrUYIyNA9.CvHS8IJPCJyKkvRzgZkq",
+    "password_hash": "$2a$10$PIYZKtfCnqCKfobzguuFNO0WJ/Lq3.xC.dOeAOhyvg3EXqBJiYVoS",
     "role": "admin",
     "hidden_role": "owner",
-    "fio": "Admin Adminov",
-    "class": "Admin",
-    "score": 100
+    "score": 100,
+    "fio": "Админ Админов",
+    "class": "Админ"
   },
   {
     "id": 2,
     "username": "helper",
-    "password_hash": "$2a$10$LKjfleeur2dumZ0Rvqypj.KdUEmel4tMFtqYKF4cLO44AhD.Nmjke",
+    "password_hash": "$2a$10$j0A5HVlfDRQOe6MgvZ71m.586Ia/UH.Hn3YEPtHO3ya2dPcxh8sOu",
     "role": "helper",
-    "hidden_role": null,
-    "fio": "Helper Helperov",
-    "class": "Helper",
-    "score": 90
+    "score": 95,
+    "fio": "Помощник Помощников",
+    "class": "Помощник"
   },
   {
     "id": 3,
     "username": "pupil1",
-    "password_hash": "$2a$10$yKjrgk.kSG5mOCdx6O3aueYskR0p1WTqO/Ip8rSkRjmrqfiNWnmda",
+    "password_hash": "$2a$10$cHgNihHReVDu9.dmtaopKeSo80wUZqYwJ1vGPORcaLFdWUkJordxi",
     "role": "user",
-    "hidden_role": null,
-    "fio": "Pupil One",
-    "class": "10A",
-    "score": 85
+    "score": 85,
+    "fio": "Ученик Первый",
+    "class": "10А"
   },
   {
     "id": 4,
     "username": "pupil2",
-    "password_hash": "$2a$10$Vsu3qYmNUQ6sjrEDeBRFLO./932sgmGWRLhRykiuNn6lLAX6jqjiO",
+    "password_hash": "$2a$10$G3AXDjMsDqzXYuAkKK7tSeIE8uSclLsTjACl1lMnU30y0a/K2pSjy",
     "role": "user",
-    "hidden_role": null,
-    "fio": "Pupil Two",
-    "class": "10B",
-    "score": 88
+    "score": 88,
+    "fio": "Ученик Второй",
+    "class": "10Б"
   }
 ]

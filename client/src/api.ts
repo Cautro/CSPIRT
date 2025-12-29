@@ -5,6 +5,11 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use(config => {
+    // НЕ добавляем токен к запросу логина
+    if (config.url === '/auth/login') {
+        return config;
+    }
+
     const token = localStorage.getItem('token');
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;

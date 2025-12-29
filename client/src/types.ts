@@ -1,18 +1,9 @@
-export type Role = 'user' | 'helper' | 'admin';
-
 export interface User {
-    id: string;
+    id: number;
     username: string;
-    fullName: string;
-    className: string;
-    role: Role;
-    isOwner: boolean;
-    socialRating: number;
-}
-
-export interface Complaint {
-    id: string;
-    targetId: string;
-    text: string;
-    className: string;
+    fio: string;
+    class: string;
+    score: number;
+    role: 'user' | 'helper' | 'admin';
+    hidden_role?: 'owner' | null;
 }

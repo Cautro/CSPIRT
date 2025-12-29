@@ -22,17 +22,17 @@ const AdminPanel = () => {
         fetchUsers();
     }, []);
 
-    if (loading) return <div className="text-center py-10 text-gray-100">Загрузка пользователей...</div>;
+    if (loading) return <div className="text-center py-10">Загрузка пользователей...</div>;
 
     return (
-        <div className="bg-gray-800 p-6 rounded-xl shadow-md">
+        <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-semibold mb-4">Список пользователей</h2>
-            <ul className="space-y-3">
+            <ul className="space-y-4">
                 {usersList.map((userItem) => (
                     <li
                         key={userItem.id}
                         onClick={() => setSelectedUser(userItem)}
-                        className="bg-gray-700 p-4 rounded-md cursor-pointer hover:bg-gray-600 transition duration-200"
+                        className="bg-gray-700 p-4 rounded cursor-pointer hover:bg-gray-600 transition-colors"
                     >
                         {userItem.fio} ({userItem.class}) - Рейтинг: {userItem.score}
                     </li>

@@ -9,20 +9,50 @@ const Dashboard = () => {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
+    const [debug, setDebug] = useState<string>('');
 
     useEffect(() => {
+        console.log('Dashboard: useEffect запущен');
+        setDebug('Проверка токена...');
+
+        const token = localStorage.getItem('token');
+        console.log('Dashboard: токен из localStorage:', token ? 'есть' : 'нет');
+
+        if (!token) {
+            setDebug('Нет токена → редирект на /login');
+            setLoading(false);
+            return;
+        }
+
+        setDebug('Токен есть, загружаем /ratings...');
+
         const fetchCurrentUser = async () => {
             try {
+                console.log('Dashboard: запрос /ratings');
                 const response = await api.get('/ratings');
+                console.log('Dashboard: ответ /ratings', response.data);
+
                 const storedUserId = localStorage.getItem('userId');
+                console.log('Dashboard: userId из localStorage', storedUserId);
+
                 const foundUser = response.data.find((u: User) => u.id === Number(storedUserId));
                 if (foundUser) {
+                    console.log('Dashboard: пользователь найден', foundUser);
                     setCurrentUser(foundUser);
+                    setDebug('Пользователь загружен');
                 } else {
-                    setError('Пользователь не найден');
+                    setError('Пользователь не найден в списке');
+                    setDebug('Пользователь не найден');
                 }
-            } catch (err) {
+            } catch (err: any) {
+                console.error('Dashboard error:', err);
+                if (err.response?.status === 401) {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('userId');
+                    setDebug('401 — токен недействителен');
+                }
                 setError('Ошибка загрузки данных');
+                setDebug('Ошибка при запросе');
             } finally {
                 setLoading(false);
             }
@@ -31,16 +61,17 @@ const Dashboard = () => {
     }, []);
 
     if (!localStorage.getItem('token')) {
-        return <Navigate to="/login" />;
+        console.log('Dashboard: нет токена → Navigate to /login');
+        return <Navigate to="/login" replace />;
     }
 
-    if (loading) return <div className="min-h-screen bg-gray-900 flex items-center justify-center text-gray-100 text-xl">Загрузка...</div>;
-    if (error) return <div className="min-h-screen bg-gray-900 flex items-center justify-center text-red-500 text-xl">{error}</div>;
-    if (!currentUser) return <div className="min-h-screen bg-gray-900 flex items-center justify-center text-gray-100 text-xl">Нет данных</div>;
+    if (loading) return <div className="min-h-screen bg-gray-900 flex items-center justify-center text-gray-100 text-xl">Загрузка... <br /> {debug}</div>;
+    if (error) return <div className="min-h-screen bg-gray-900 flex items-center justify-center text-red-500 text-xl">{error} <br /> {debug}</div>;
+    if (!currentUser) return <div className="min-h-screen bg-gray-900 flex items-center justify-center text-gray-100 text-xl">Нет данных <br /> {debug}</div>;
 
     return (
         <div className="min-h-screen bg-gray-900 text-gray-100 p-6">
-            <header className="flex justify-between items-center mb-8 bg-gray-800 p-4 rounded-xl shadow-md">
+            <header className="flex justify-between items-center mb-8 bg-gray-800 p-4 rounded-xl">
                 <h1 className="text-3xl font-bold">CSPIRT Dashboard</h1>
                 <button
                     onClick={() => {
@@ -48,7 +79,7 @@ const Dashboard = () => {
                         localStorage.removeItem('userId');
                         window.location.href = '/login';
                     }}
-                    className="bg-red-600 hover:bg-red-700 px-6 py-2 rounded-md transition duration-200"
+                    className="bg-red-600 hover:bg-red-700 px-6 py-2 rounded-md"
                 >
                     Выйти
                 </button>
@@ -64,55 +95,8 @@ const Dashboard = () => {
                     <p className="mb-2 text-gray-300">ФИО: {currentUser.fio}</p>
                     <p className="mb-2 text-gray-300">Класс: {currentUser.class}</p>
                     <p className="mb-4 text-gray-300">Рейтинг: {currentUser.score}</p>
-                    {/* Жалобы для user */}
-                    <ComplaintsSection currentUserId={currentUser.id} />
                 </div>
             )}
-        </div>
-    );
-};
-
-const ComplaintsSection = ({ currentUserId }: { currentUserId: number }) => {
-    const [users, setUsers] = useState<User[]>([]);
-    const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
-    const [content, setContent] = useState<string>('');
-
-    useEffect(() => {
-        const fetchUsers = async () => {
-            const response = await api.get('/ratings');
-            setUsers(response.data.filter((u: User) => u.id !== currentUserId));
-        };
-        fetchUsers();
-    }, [currentUserId]);
-
-    const sendComplaint = async () => {
-        if (selectedUserId && content) {
-            await api.post('/complaints', { toUserId: selectedUserId, content });
-            alert('Жалоба отправлена');
-            setContent('');
-            setSelectedUserId(null);
-        }
-    };
-
-    return (
-        <div>
-            <h3 className="text-xl font-medium mb-2">Отправить жалобу</h3>
-            <select
-                onChange={(e) => setSelectedUserId(Number(e.target.value))}
-                className="bg-gray-700 p-2 rounded-md mb-2 w-full"
-            >
-                <option value="">Выберите ученика</option>
-                {users.map(u => <option key={u.id} value={u.id}>{u.fio}</option>)}
-            </select>
-            <textarea
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="Текст жалобы"
-                className="bg-gray-700 p-2 rounded-md mb-2 w-full h-24"
-            />
-            <button onClick={sendComplaint} className="bg-red-600 px-4 py-2 rounded-md w-full hover:bg-red-700 transition duration-200">
-                Отправить
-            </button>
         </div>
     );
 };
