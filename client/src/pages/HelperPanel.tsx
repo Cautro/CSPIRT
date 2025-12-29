@@ -1,46 +1,74 @@
-import React, { useState, useEffect } from 'react';
-import { getUser, sendComplaint } from '../api/api';
+import { useEffect, useState } from 'react';
+import { api } from '../api';
+import { User } from '../types';
 
 const HelperPanel = () => {
-    const [user, setUser] = useState<any>(null);
-    const [complaint, setComplaint] = useState('');
+    const [usersList, setUsersList] = useState<User[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [noteContent, setNoteContent] = useState<string>('');
+    const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
     useEffect(() => {
-        const userData = JSON.parse(localStorage.getItem('user')!);
-        setUser(userData);
+        const fetchUsers = async () => {
+            try {
+                const response = await api.get('/ratings');
+                setUsersList(response.data);
+            } catch (err) {
+                console.error('Ошибка загрузки пользователей');
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchUsers();
     }, []);
 
-    const handleSendComplaint = async () => {
-        if (!complaint.trim()) return;
-        try {
-            await sendComplaint(user.id, complaint);
-            alert('Жалоба отправлена!');
-            setComplaint('');
-        } catch (err) {
-            alert('Ошибка при отправке жалобы');
+    const addNote = async () => {
+        if (selectedUserId && noteContent) {
+            try {
+                await api.post('/notes', { userId: selectedUserId, content: noteContent });
+                alert('Заметка добавлена');
+                setNoteContent('');
+                setSelectedUserId(null);
+            } catch (err) {
+                alert('Ошибка добавления заметки');
+            }
         }
     };
 
-    return (
-        <div className="dashboard-container">
-            <h2>Профиль хелпера</h2>
-            <div className="user-card">
-                <div>
-                    <h3>{user?.name}</h3>
-                    <p>Класс: {user?.class}</p>
-                    <p>Рейтинг: {user?.rating || 0}</p>
-                </div>
-            </div>
+    if (loading) return <div className="text-center py-10 text-gray-100">Загрузка...</div>;
 
-            <div className="complaint-form">
-                <h3>Отправить заметку (для админов)</h3>
-                <textarea
-                    placeholder="Опишите поведение ученика"
-                    value={complaint}
-                    onChange={(e) => setComplaint(e.target.value)}
-                />
-                <button onClick={handleSendComplaint}>Отправить</button>
-            </div>
+    return (
+        <div className="bg-gray-800 p-6 rounded-xl shadow-md">
+            <h2 className="text-2xl font-semibold mb-4">Заметки к ученикам</h2>
+            <ul className="space-y-3 mb-6">
+                {usersList.map((userItem) => (
+                    <li
+                        key={userItem.id}
+                        className="bg-gray-700 p-4 rounded-md flex justify-between items-center"
+                    >
+                        {userItem.fio} ({userItem.class})
+                        <button
+                            onClick={() => setSelectedUserId(userItem.id)}
+                            className="bg-blue-600 px-3 py-1 rounded-md hover:bg-blue-700 transition duration-200"
+                        >
+                            Добавить заметку
+                        </button>
+                    </li>
+                ))}
+            </ul>
+            {selectedUserId && (
+                <div className="flex flex-col">
+          <textarea
+              value={noteContent}
+              onChange={(e) => setNoteContent(e.target.value)}
+              placeholder="Введите заметку..."
+              className="bg-gray-700 p-2 rounded-md mb-2 h-24 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+          />
+                    <button onClick={addNote} className="bg-green-600 px-4 py-2 rounded-md hover:bg-green-700 transition duration-200">
+                        Сохранить заметку
+                    </button>
+                </div>
+            )}
         </div>
     );
 };

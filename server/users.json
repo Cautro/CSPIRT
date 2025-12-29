@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "username": "admin",
+    "password_hash": "$2a$10$Zau5dRgb76v5LNfaRim7SOyRrUYIyNA9.CvHS8IJPCJyKkvRzgZkq",
+    "role": "admin",
+    "hidden_role": "owner",
+    "fio": "Admin Adminov",
+    "class": "Admin",
+    "score": 100
+  },
+  {
+    "id": 2,
+    "username": "helper",
+    "password_hash": "$2a$10$LKjfleeur2dumZ0Rvqypj.KdUEmel4tMFtqYKF4cLO44AhD.Nmjke",
+    "role": "helper",
+    "hidden_role": null,
+    "fio": "Helper Helperov",
+    "class": "Helper",
+    "score": 90
+  },
+  {
+    "id": 3,
+    "username": "pupil1",
+    "password_hash": "$2a$10$yKjrgk.kSG5mOCdx6O3aueYskR0p1WTqO/Ip8rSkRjmrqfiNWnmda",
+    "role": "user",
+    "hidden_role": null,
+    "fio": "Pupil One",
+    "class": "10A",
+    "score": 85
+  },
+  {
+    "id": 4,
+    "username": "pupil2",
+    "password_hash": "$2a$10$Vsu3qYmNUQ6sjrEDeBRFLO./932sgmGWRLhRykiuNn6lLAX6jqjiO",
+    "role": "user",
+    "hidden_role": null,
+    "fio": "Pupil Two",
+    "class": "10B",
+    "score": 88
+  }
+]
