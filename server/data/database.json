@@ -1,0 +1,14 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "login": "admin",
+      "password": "$2b$10$wH0EoNQYhZx4yXh9ZQz8kuYbFl5J8R4MlJ1Y4VY5JrjB4P2hK",
+      "role": "admin",
+      "fullName": "Иванов Иван Иванович",
+      "class": "11А",
+      "rating": 100,
+      "isOwner": false
+    }
+  ]
+}
